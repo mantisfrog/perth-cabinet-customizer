@@ -1,11 +1,11 @@
-
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Navigation from '@/components/Navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Download } from 'lucide-react';
+import { Download } from 'lucide-react';
 
 interface Order {
   id: string;
@@ -45,18 +45,18 @@ const statusColors = {
 const Admin = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Simple password protection
+    // Password protection
     const password = window.prompt('Enter admin password:');
-    if (password === 'admin123') {
+    if (password === '12345') {
       setIsAuthenticated(true);
       loadOrders();
     } else {
-      alert('Incorrect password');
-      window.history.back();
+      navigate('/');
     }
-  }, []);
+  }, [navigate]);
 
   const loadOrders = () => {
     const savedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
@@ -86,7 +86,7 @@ const Admin = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Authenticating...</h1>
+          <h1 className="text-2xl font-bold mb-4">Redirecting...</h1>
         </div>
       </div>
     );
@@ -94,32 +94,22 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Link to="/" className="mr-4">
-                <Button variant="ghost" size="sm">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Gallery
-                </Button>
-              </Link>
-              <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button onClick={exportOrders} variant="outline" size="sm">
-                <Download className="w-4 h-4 mr-2" />
-                Export Orders
-              </Button>
-              <Button onClick={loadOrders} variant="outline" size="sm">
-                Refresh
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Navigation />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+          <div className="flex items-center space-x-4">
+            <Button onClick={exportOrders} variant="outline" size="sm">
+              <Download className="w-4 h-4 mr-2" />
+              Export Orders
+            </Button>
+            <Button onClick={loadOrders} variant="outline" size="sm">
+              Refresh
+            </Button>
+          </div>
+        </div>
+
         <div className="mb-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card>
